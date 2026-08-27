@@ -8,56 +8,77 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QPushButton,
     QLabel,
-    QStackedWidget
+    QStackedWidget,
+    QMessageBox,
+    QDialog
 )
 
-from database import criar_banco
+from PySide6.QtCore import QSettings
+
+from app_paths import caminho_recurso
+
+from database import (
+    criar_banco,
+    existe_usuario
+)
+
+from services.backup import (
+    criar_backup,
+    verificar_integridade
+)
+
 from ui.dashboard import DashboardPage
 from ui.produtos import ProdutosPage
 from ui.vendas import VendasPage
+from ui.historico import HistoricoPage
+from ui.relatorios import RelatoriosPage
 
-
-class PlaceholderPage(QWidget):
-    def __init__(self, titulo):
-        super().__init__()
-
-        layout = QVBoxLayout(self)
-
-        layout.setContentsMargins(
-            30,
-            30,
-            30,
-            30
-        )
-
-        label = QLabel(titulo)
-        label.setObjectName("pageTitulo")
-
-        texto = QLabel(
-            "Esta área será implementada na próxima etapa."
-        )
-        texto.setObjectName("pageSubtitulo")
-
-        layout.addWidget(label)
-        layout.addWidget(texto)
-
-        layout.addStretch()
+from ui.login import (
+    LoginDialog,
+    CriarAdministradorDialog,
+    AlterarSenhaDialog
+)
 
 
 class VendaFacil(QMainWindow):
-    def __init__(self):
+
+    def __init__(self, usuario_logado):
         super().__init__()
 
-        self.setWindowTitle("Venda Fácil")
+        self.usuario_logado = usuario_logado
+
+        # =====================
+        # CONFIGURAÇÕES
+        # =====================
+
+        self.config = QSettings(
+            "VendaFacil",
+            "VendaFacil"
+        )
+
+        self.tema_escuro = (
+            self.config.value(
+                "tema",
+                "claro"
+            ) == "escuro"
+        )
+
+        # =====================
+        # JANELA
+        # =====================
+
+        self.setWindowTitle(
+            "Venda Fácil"
+        )
 
         self.resize(
-            1200,
-            720
+            1280,
+            760
         )
 
         self.setMinimumSize(
-            950,
-            600
+            1000,
+            620
         )
 
         container = QWidget()
@@ -84,9 +105,14 @@ class VendaFacil(QMainWindow):
         # =====================
 
         sidebar = QWidget()
-        sidebar.setObjectName("sidebar")
 
-        sidebar.setFixedWidth(230)
+        sidebar.setObjectName(
+            "sidebar"
+        )
+
+        sidebar.setFixedWidth(
+            240
+        )
 
         sidebar_layout = QVBoxLayout(
             sidebar
@@ -94,18 +120,29 @@ class VendaFacil(QMainWindow):
 
         sidebar_layout.setContentsMargins(
             20,
-            28,
+            30,
             20,
-            28
+            24
         )
 
-        sidebar_layout.setSpacing(8)
+        sidebar_layout.setSpacing(
+            8
+        )
 
-        logo = QLabel("Venda Fácil")
-        logo.setObjectName("logo")
+        # =====================
+        # LOGO
+        # =====================
+
+        logo = QLabel(
+            "Venda Fácil"
+        )
+
+        logo.setObjectName(
+            "logo"
+        )
 
         descricao = QLabel(
-            "Sistema de Vendas"
+            "GESTÃO DE VENDAS"
         )
 
         descricao.setObjectName(
@@ -124,27 +161,31 @@ class VendaFacil(QMainWindow):
             35
         )
 
+        # =====================
+        # MENU
+        # =====================
+
         self.btn_dashboard = QPushButton(
-            "Dashboard"
+            "⌂   Dashboard"
         )
 
         self.btn_vendas = QPushButton(
-            "Nova Venda"
+            "＋   Nova Venda"
         )
 
         self.btn_produtos = QPushButton(
-            "Produtos"
+            "▣   Produtos"
         )
 
         self.btn_historico = QPushButton(
-            "Histórico"
+            "◷   Histórico"
         )
 
         self.btn_relatorios = QPushButton(
-            "Relatórios"
+            "▤   Relatórios"
         )
 
-        botoes = [
+        self.botoes_menu = [
             self.btn_dashboard,
             self.btn_vendas,
             self.btn_produtos,
@@ -152,9 +193,17 @@ class VendaFacil(QMainWindow):
             self.btn_relatorios
         ]
 
-        for botao in botoes:
+        for botao in self.botoes_menu:
             botao.setObjectName(
                 "menuButton"
+            )
+
+            botao.setCheckable(
+                True
+            )
+
+            botao.setMinimumHeight(
+                44
             )
 
             sidebar_layout.addWidget(
@@ -163,8 +212,92 @@ class VendaFacil(QMainWindow):
 
         sidebar_layout.addStretch()
 
+        # =====================
+        # USUÁRIO
+        # =====================
+
+        usuario_titulo = QLabel(
+            "USUÁRIO"
+        )
+
+        usuario_titulo.setObjectName(
+            "userLabel"
+        )
+
+        self.usuario_label = QLabel(
+            self.usuario_logado[
+                "usuario"
+            ]
+        )
+
+        self.usuario_label.setObjectName(
+            "userName"
+        )
+
+        sidebar_layout.addWidget(
+            usuario_titulo
+        )
+
+        sidebar_layout.addWidget(
+            self.usuario_label
+        )
+
+        sidebar_layout.addSpacing(
+            10
+        )
+
+        # =====================
+        # ALTERAR SENHA
+        # =====================
+
+        self.btn_senha = QPushButton(
+            "⚿   Alterar senha"
+        )
+
+        self.btn_senha.setObjectName(
+            "themeButton"
+        )
+
+        self.btn_senha.setMinimumHeight(
+            40
+        )
+
+        sidebar_layout.addWidget(
+            self.btn_senha
+        )
+
+        sidebar_layout.addSpacing(
+            6
+        )
+
+        # =====================
+        # TEMA
+        # =====================
+
+        self.btn_tema = QPushButton()
+
+        self.btn_tema.setObjectName(
+            "themeButton"
+        )
+
+        self.btn_tema.setMinimumHeight(
+            40
+        )
+
+        sidebar_layout.addWidget(
+            self.btn_tema
+        )
+
+        sidebar_layout.addSpacing(
+            10
+        )
+
+        # =====================
+        # VERSÃO
+        # =====================
+
         versao = QLabel(
-            "Venda Fácil v0.1"
+            "Venda Fácil\nv0.3.1"
         )
 
         versao.setObjectName(
@@ -187,13 +320,9 @@ class VendaFacil(QMainWindow):
 
         self.pagina_produtos = ProdutosPage()
 
-        self.pagina_historico = PlaceholderPage(
-            "Histórico"
-        )
+        self.pagina_historico = HistoricoPage()
 
-        self.pagina_relatorios = PlaceholderPage(
-            "Relatórios"
-        )
+        self.pagina_relatorios = RelatoriosPage()
 
         self.paginas.addWidget(
             self.dashboard
@@ -215,16 +344,21 @@ class VendaFacil(QMainWindow):
             self.pagina_relatorios
         )
 
+        # =====================
+        # LAYOUT
+        # =====================
+
         layout.addWidget(
             sidebar
         )
 
         layout.addWidget(
-            self.paginas
+            self.paginas,
+            1
         )
 
         # =====================
-        # BOTÕES
+        # EVENTOS
         # =====================
 
         self.btn_dashboard.clicked.connect(
@@ -233,19 +367,52 @@ class VendaFacil(QMainWindow):
 
         self.btn_vendas.clicked.connect(
             self.abrir_vendas
-        )          
+        )
 
         self.btn_produtos.clicked.connect(
             self.abrir_produtos
         )
 
         self.btn_historico.clicked.connect(
-            lambda: self.paginas.setCurrentIndex(3)
+            self.abrir_historico
         )
 
         self.btn_relatorios.clicked.connect(
-            lambda: self.paginas.setCurrentIndex(4)
+            self.abrir_relatorios
         )
+
+        self.btn_senha.clicked.connect(
+            self.abrir_alterar_senha
+        )
+
+        self.btn_tema.clicked.connect(
+            self.alternar_tema
+        )
+
+        # =====================
+        # INICIAR
+        # =====================
+
+        self.aplicar_tema_atual()
+
+        self.abrir_dashboard()
+
+    # =========================
+    # MENU ATIVO
+    # =========================
+
+    def marcar_menu(
+        self,
+        botao_ativo
+    ):
+        for botao in self.botoes_menu:
+            botao.setChecked(
+                botao == botao_ativo
+            )
+
+    # =========================
+    # DASHBOARD
+    # =========================
 
     def abrir_dashboard(self):
         self.dashboard.atualizar()
@@ -253,12 +420,30 @@ class VendaFacil(QMainWindow):
         self.paginas.setCurrentIndex(
             0
         )
+
+        self.marcar_menu(
+            self.btn_dashboard
+        )
+
+    # =========================
+    # VENDAS
+    # =========================
+
     def abrir_vendas(self):
         self.pagina_vendas.carregar_produtos()
 
         self.paginas.setCurrentIndex(
             1
         )
+
+        self.marcar_menu(
+            self.btn_vendas
+        )
+
+    # =========================
+    # PRODUTOS
+    # =========================
+
     def abrir_produtos(self):
         self.pagina_produtos.carregar_produtos()
 
@@ -266,294 +451,310 @@ class VendaFacil(QMainWindow):
             2
         )
 
-
-def aplicar_estilo(app):
-    app.setStyleSheet("""
-        QMainWindow {
-            background: #f4f6f9;
-        }
-
-        QWidget {
-            font-family: "Segoe UI";
-            font-size: 14px;
-            color: #0f172a;
-        }
-
-        /* SIDEBAR */
-
-        #sidebar {
-            background: #0f172a;
-        }
-
-        #logo {
-            color: white;
-            font-size: 25px;
-            font-weight: 700;
-        }
-
-        #logoDescricao {
-            color: #64748b;
-            font-size: 12px;
-        }
-
-        #menuButton {
-            background: transparent;
-            color: #cbd5e1;
-
-            border: none;
-            border-radius: 8px;
-
-            padding: 12px 14px;
-
-            text-align: left;
-
-            font-size: 14px;
-        }
-
-        #menuButton:hover {
-            background: #1e293b;
-            color: white;
-        }
-
-        #menuButton:pressed {
-            background: #2563eb;
-            color: white;
-        }
-
-        #versao {
-            color: #475569;
-            font-size: 11px;
-        }
-
-        /* TÍTULOS */
-
-        #pageTitulo {
-            font-size: 30px;
-            font-weight: 700;
-            color: #0f172a;
-        }
-
-        #pageSubtitulo {
-            color: #64748b;
-            font-size: 14px;
-        }
-
-        /* DASHBOARD */
-
-        #card {
-            background: white;
-
-            border: 1px solid #e2e8f0;
-
-            border-radius: 14px;
-
-            padding: 15px;
-
-            min-height: 110px;
-        }
-
-        #cardTitulo {
-            color: #64748b;
-            font-size: 13px;
-        }
-
-        #cardValor {
-            color: #0f172a;
-
-            font-size: 27px;
-            font-weight: 700;
-        }
-
-        /* CAMPOS */
-
-        QLineEdit {
-            background: white;
-
-            border: 1px solid #dbe2ea;
-
-            border-radius: 8px;
-
-            padding: 11px;
-
-            font-size: 14px;
-        }
-
-        QLineEdit:focus {
-            border: 1px solid #2563eb;
-        }
-
-        /* TABELA */
-
-        QTableWidget {
-            background: white;
-
-            border: 1px solid #e2e8f0;
-
-            border-radius: 10px;
-
-            gridline-color: #f1f5f9;
-
-            selection-background-color: #eff6ff;
-            selection-color: #0f172a;
-        }
-
-        QTableWidget::item {
-            padding: 8px;
-        }
-
-        QHeaderView::section {
-            background: #f8fafc;
-
-            color: #64748b;
-
-            border: none;
-
-            border-bottom: 1px solid #e2e8f0;
-
-            padding: 10px;
-
-            font-weight: 600;
-        }
-
-        /* BOTÃO PRINCIPAL */
-
-        #primaryButton {
-            background: #2563eb;
-
-            color: white;
-
-            border: none;
-
-            border-radius: 8px;
-
-            padding: 11px 18px;
-
-            font-weight: 600;
-        }
-
-        #primaryButton:hover {
-            background: #1d4ed8;
-        }
-
-        /* EDITAR */
-
-        #editButton {
-            background: #eff6ff;
-
-            color: #2563eb;
-
-            border: none;
-
-            border-radius: 6px;
-
-            padding: 7px 12px;
-        }
-
-        #editButton:hover {
-            background: #dbeafe;
-        }
-
-        /* EXCLUIR */
-
-        #deleteButton {
-            background: #fef2f2;
-
-            color: #dc2626;
-
-            border: none;
-
-            border-radius: 6px;
-
-            padding: 7px 12px;
-        }
-
-        #deleteButton:hover {
-            background: #fee2e2;
-        }
-        QComboBox,
-QSpinBox {
-    background: white;
-
-    border: 1px solid #dbe2ea;
-
-    border-radius: 8px;
-
-    padding: 9px;
-
-    font-size: 14px;
-}
-
-QComboBox:focus,
-QSpinBox:focus {
-    border: 1px solid #2563eb;
-}
-
-#saleFooter {
-    background: white;
-
-    border: 1px solid #e2e8f0;
-
-    border-radius: 12px;
-}
-
-#fieldLabel {
-    color: #64748b;
-
-    font-size: 12px;
-
-    font-weight: 600;
-}
-
-#totalTitulo {
-    color: #64748b;
-
-    font-size: 11px;
-
-    font-weight: 600;
-}
-
-#totalValor {
-    color: #0f172a;
-
-    font-size: 26px;
-
-    font-weight: 700;
-}
-
-#finishButton {
-    background: #16a34a;
-
-    color: white;
-
-    border: none;
-
-    border-radius: 9px;
-
-    padding: 12px 22px;
-
-    font-size: 14px;
-
-    font-weight: 700;
-}
-
-#finishButton:hover {
-    background: #15803d;
-}
-    """)
-
+        self.marcar_menu(
+            self.btn_produtos
+        )
+
+    # =========================
+    # HISTÓRICO
+    # =========================
+
+    def abrir_historico(self):
+        self.pagina_historico.carregar_vendas()
+
+        self.paginas.setCurrentIndex(
+            3
+        )
+
+        self.marcar_menu(
+            self.btn_historico
+        )
+
+    # =========================
+    # RELATÓRIOS
+    # =========================
+
+    def abrir_relatorios(self):
+        self.pagina_relatorios.atualizar_relatorio()
+
+        self.paginas.setCurrentIndex(
+            4
+        )
+
+        self.marcar_menu(
+            self.btn_relatorios
+        )
+
+    # =========================
+    # ALTERAR SENHA
+    # =========================
+
+    def abrir_alterar_senha(self):
+        janela = AlterarSenhaDialog(
+            self.usuario_logado[
+                "id"
+            ],
+            self
+        )
+
+        janela.exec()
+
+    # =========================
+    # TEMA
+    # =========================
+
+    def aplicar_tema_atual(self):
+        app = QApplication.instance()
+
+        if self.tema_escuro:
+            arquivo_tema = caminho_recurso(
+                "assets/dark.qss"
+            )
+
+            self.btn_tema.setText(
+                "☀   Modo claro"
+            )
+
+        else:
+            arquivo_tema = caminho_recurso(
+                "assets/style.qss"
+            )
+
+            self.btn_tema.setText(
+                "☾   Modo escuro"
+            )
+
+        try:
+            with open(
+                arquivo_tema,
+                "r",
+                encoding="utf-8"
+            ) as arquivo:
+                app.setStyleSheet(
+                    arquivo.read()
+                )
+
+        except FileNotFoundError:
+            QMessageBox.warning(
+                self,
+                "Tema",
+                (
+                    "O arquivo de tema "
+                    "não foi encontrado.\n\n"
+                    f"{arquivo_tema}"
+                )
+            )
+
+    def alternar_tema(self):
+        self.tema_escuro = (
+            not self.tema_escuro
+        )
+
+        if self.tema_escuro:
+            self.config.setValue(
+                "tema",
+                "escuro"
+            )
+
+        else:
+            self.config.setValue(
+                "tema",
+                "claro"
+            )
+
+        self.config.sync()
+
+        self.aplicar_tema_atual()
+
+    # =========================
+    # FECHAR / BACKUP
+    # =========================
+
+    def closeEvent(
+        self,
+        event
+    ):
+        try:
+            criar_backup()
+
+            event.accept()
+
+        except Exception as erro:
+            resposta = QMessageBox.warning(
+                self,
+                "Falha no backup",
+                (
+                    "Não foi possível criar "
+                    "o backup antes de fechar."
+                    "\n\n"
+                    f"Erro: {erro}"
+                    "\n\n"
+                    "Deseja fechar mesmo assim?"
+                ),
+                QMessageBox.StandardButton.Yes
+                |
+                QMessageBox.StandardButton.No
+            )
+
+            if resposta == (
+                QMessageBox.StandardButton.Yes
+            ):
+                event.accept()
+
+            else:
+                event.ignore()
+
+
+# =========================================================
+# TEMA ANTES DO LOGIN
+# =========================================================
+
+def carregar_tema_inicial(app):
+    config = QSettings(
+        "VendaFacil",
+        "VendaFacil"
+    )
+
+    escuro = (
+        config.value(
+            "tema",
+            "claro"
+        ) == "escuro"
+    )
+
+    if escuro:
+        arquivo_tema = caminho_recurso(
+            "assets/dark.qss"
+        )
+
+    else:
+        arquivo_tema = caminho_recurso(
+            "assets/style.qss"
+        )
+
+    try:
+        with open(
+            arquivo_tema,
+            "r",
+            encoding="utf-8"
+        ) as arquivo:
+            app.setStyleSheet(
+                arquivo.read()
+            )
+
+    except FileNotFoundError:
+        print(
+            "Tema não encontrado:",
+            arquivo_tema
+        )
+
+
+# =========================================================
+# INICIAR
+# =========================================================
 
 if __name__ == "__main__":
-    criar_banco()
 
     app = QApplication(
         sys.argv
     )
 
-    aplicar_estilo(
+    app.setApplicationName(
+        "Venda Fácil"
+    )
+
+    carregar_tema_inicial(
         app
     )
 
-    janela = VendaFacil()
+    # =====================
+    # BANCO
+    # =====================
+
+    criar_banco()
+
+    # =====================
+    # INTEGRIDADE
+    # =====================
+
+    if not verificar_integridade():
+        QMessageBox.critical(
+            None,
+            "Erro no banco de dados",
+            (
+                "O banco de dados não passou "
+                "na verificação de integridade."
+                "\n\n"
+                "Por segurança, o Venda Fácil "
+                "não será iniciado."
+            )
+        )
+
+        sys.exit(
+            1
+        )
+
+    # =====================
+    # BACKUP INICIAL
+    # =====================
+
+    try:
+        criar_backup()
+
+    except Exception as erro:
+        QMessageBox.warning(
+            None,
+            "Backup",
+            (
+                "O sistema não conseguiu criar "
+                "o backup inicial."
+                "\n\n"
+                f"{erro}"
+            )
+        )
+
+    # =====================
+    # PRIMEIRO ACESSO
+    # =====================
+
+    if not existe_usuario():
+        configuracao = (
+            CriarAdministradorDialog()
+        )
+
+        resultado = (
+            configuracao.exec()
+        )
+
+        if resultado != (
+            QDialog.DialogCode.Accepted
+        ):
+            sys.exit(
+                0
+            )
+
+    # =====================
+    # LOGIN
+    # =====================
+
+    login = LoginDialog()
+
+    resultado = login.exec()
+
+    if resultado != (
+        QDialog.DialogCode.Accepted
+    ):
+        sys.exit(
+            0
+        )
+
+    # =====================
+    # ABRIR SISTEMA
+    # =====================
+
+    janela = VendaFacil(
+        login.usuario_logado
+    )
 
     janela.show()
 

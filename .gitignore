@@ -1,0 +1,31 @@
+# Ambiente virtual
+.venv/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# VS Code
+.vscode/
+
+# PyInstaller
+build/
+dist/
+*.spec
+
+# Banco local
+database.db
+database.db-shm
+database.db-wal
+
+# Backups
+backups/
+
+# Logs
+*.log
+
+# Sistema
+.DS_Store
+Thumbs.db

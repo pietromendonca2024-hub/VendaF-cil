@@ -1,0 +1,694 @@
+/* =========================================================
+   VENDA FÁCIL - DARK MODE
+========================================================= */
+
+QMainWindow {
+    background-color: #0f172a;
+}
+
+QWidget {
+    font-family: "Bahnschrift";
+    font-size: 13px;
+    font-weight: 400;
+    color: #e5e7eb;
+}
+
+QStackedWidget {
+    background-color: #111827;
+}
+
+
+/* =========================
+   SIDEBAR
+========================= */
+
+#sidebar {
+    background-color: #080f1d;
+    border-right: 1px solid #1e293b;
+}
+
+#logo {
+    color: #ffffff;
+    font-family: "Bahnschrift";
+    font-size: 24px;
+    font-weight: 600;
+}
+
+#logoDescricao {
+    color: #64748b;
+    font-size: 10px;
+    font-weight: 500;
+}
+
+#menuButton {
+    background-color: transparent;
+    color: #94a3b8;
+
+    border: none;
+    border-radius: 9px;
+
+    padding: 12px 14px;
+
+    text-align: left;
+
+    font-size: 13px;
+    font-weight: 500;
+}
+
+#menuButton:hover {
+    background-color: #172033;
+    color: #ffffff;
+}
+
+#menuButton:checked {
+    background-color: #172554;
+    color: #60a5fa;
+
+    border-left: 3px solid #3b82f6;
+}
+
+#versao {
+    color: #475569;
+    font-size: 10px;
+    font-weight: 400;
+}
+
+
+/* =========================
+   TEXTOS
+========================= */
+
+#pageTitulo {
+    color: #f8fafc;
+
+    font-family: "Bahnschrift";
+    font-size: 29px;
+    font-weight: 600;
+}
+
+#pageSubtitulo {
+    color: #94a3b8;
+
+    font-size: 13px;
+    font-weight: 400;
+}
+
+#dashboardDate {
+    color: #cbd5e1;
+
+    background-color: #1e293b;
+
+    border: 1px solid #334155;
+    border-radius: 9px;
+
+    padding: 8px 12px;
+
+    font-size: 12px;
+    font-weight: 400;
+}
+
+
+/* =========================
+   CARDS
+========================= */
+
+#card,
+#metricCard,
+#dashboardPanel,
+#reportMetricCard,
+#reportPanel {
+    background-color: #1e293b;
+
+    border: 1px solid #334155;
+    border-radius: 14px;
+}
+
+#cardTitulo,
+#metricLabel,
+#reportMetricLabel {
+    color: #94a3b8;
+
+    font-size: 10px;
+    font-weight: 500;
+}
+
+#cardValor,
+#metricValue,
+#reportMetricValue {
+    color: #f8fafc;
+
+    font-family: "Bahnschrift";
+    font-size: 26px;
+    font-weight: 600;
+}
+
+#metricDescription,
+#reportMetricDescription {
+    color: #64748b;
+
+    font-size: 11px;
+    font-weight: 400;
+}
+
+
+/* =========================
+   PAINÉIS
+========================= */
+
+#panelTitle,
+#reportPanelTitle {
+    color: #f8fafc;
+
+    font-size: 15px;
+    font-weight: 600;
+}
+
+#panelDescription,
+#reportPanelDescription {
+    color: #64748b;
+
+    font-size: 11px;
+    font-weight: 400;
+}
+
+
+/* =========================
+   INPUTS
+========================= */
+
+QLineEdit,
+QComboBox,
+QSpinBox {
+    background-color: #1e293b;
+
+    color: #f8fafc;
+
+    border: 1px solid #334155;
+    border-radius: 9px;
+
+    padding: 10px;
+
+    font-size: 13px;
+    font-weight: 400;
+}
+
+QLineEdit:hover,
+QComboBox:hover,
+QSpinBox:hover {
+    border-color: #475569;
+}
+
+QLineEdit:focus,
+QComboBox:focus,
+QSpinBox:focus {
+    border: 1px solid #3b82f6;
+}
+
+
+/* =========================
+   COMBOBOX
+========================= */
+
+QComboBox::drop-down {
+    border: none;
+}
+
+QComboBox QAbstractItemView {
+    background-color: #1e293b;
+
+    color: #f8fafc;
+
+    border: 1px solid #334155;
+
+    selection-background-color: #2563eb;
+    selection-color: #ffffff;
+
+    font-size: 13px;
+}
+
+
+/* =========================
+   TABELAS
+========================= */
+
+QTableWidget {
+    background-color: #1e293b;
+
+    alternate-background-color: #182235;
+
+    color: #e5e7eb;
+
+    border: 1px solid #334155;
+    border-radius: 10px;
+
+    gridline-color: #334155;
+
+    selection-background-color: #1e3a8a;
+    selection-color: #ffffff;
+
+    font-size: 13px;
+    font-weight: 400;
+}
+
+QTableWidget::item {
+    padding: 8px;
+
+    border-bottom: 1px solid #263449;
+}
+
+QTableWidget::item:hover {
+    background-color: #263449;
+}
+
+QHeaderView::section {
+    background-color: #172033;
+
+    color: #94a3b8;
+
+    border: none;
+    border-bottom: 1px solid #334155;
+
+    padding: 10px;
+
+    font-size: 11px;
+    font-weight: 600;
+}
+
+
+/* =========================
+   BOTÃO PRINCIPAL
+========================= */
+
+#primaryButton {
+    background-color: #2563eb;
+
+    color: #ffffff;
+
+    border: none;
+    border-radius: 8px;
+
+    padding: 11px 18px;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+#primaryButton:hover {
+    background-color: #3b82f6;
+}
+
+#primaryButton:pressed {
+    background-color: #1d4ed8;
+}
+
+
+/* =========================
+   BOTÃO SECUNDÁRIO
+========================= */
+
+#secondaryButton {
+    background-color: #1e293b;
+
+    color: #cbd5e1;
+
+    border: 1px solid #334155;
+    border-radius: 8px;
+
+    padding: 10px 16px;
+
+    font-size: 12px;
+    font-weight: 500;
+}
+
+#secondaryButton:hover {
+    background-color: #263449;
+}
+
+
+/* =========================
+   NOVA VENDA
+========================= */
+
+#saleFooter {
+    background-color: #1e293b;
+
+    border: 1px solid #334155;
+    border-radius: 12px;
+}
+
+#fieldLabel,
+#totalTitulo {
+    color: #94a3b8;
+
+    font-size: 10px;
+    font-weight: 500;
+}
+
+#totalValor {
+    color: #f8fafc;
+
+    font-family: "Bahnschrift";
+    font-size: 28px;
+    font-weight: 600;
+}
+
+#finishButton {
+    background-color: #16a34a;
+
+    color: #ffffff;
+
+    border: none;
+    border-radius: 9px;
+
+    padding: 12px 22px;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+#finishButton:hover {
+    background-color: #22c55e;
+}
+
+#finishButton:pressed {
+    background-color: #15803d;
+}
+
+
+/* =========================
+   AÇÕES
+========================= */
+
+#editButton {
+    background-color: #172554;
+    color: #60a5fa;
+
+    border: 1px solid #1e3a8a;
+    border-radius: 7px;
+
+    padding: 7px 12px;
+
+    font-size: 12px;
+    font-weight: 500;
+}
+
+#editButton:hover {
+    background-color: #1e3a8a;
+}
+
+#deleteButton {
+    background-color: #451a1a;
+    color: #f87171;
+
+    border: 1px solid #7f1d1d;
+    border-radius: 7px;
+
+    padding: 7px 12px;
+
+    font-size: 12px;
+    font-weight: 500;
+}
+
+#deleteButton:hover {
+    background-color: #5f1d1d;
+}
+
+#detailsButton {
+    background-color: #263449;
+    color: #cbd5e1;
+
+    border: none;
+    border-radius: 7px;
+
+    padding: 8px 12px;
+
+    font-size: 12px;
+    font-weight: 500;
+}
+
+#detailsButton:hover {
+    background-color: #334155;
+}
+
+
+/* =========================
+   PAGAMENTOS
+========================= */
+
+#paymentRow {
+    background-color: #172033;
+
+    border: 1px solid #263449;
+    border-radius: 8px;
+}
+
+#paymentName {
+    color: #cbd5e1;
+
+    font-size: 12px;
+    font-weight: 400;
+}
+
+#paymentValue {
+    color: #f8fafc;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+
+/* =========================
+   DESTAQUES
+========================= */
+
+#highlightValue {
+    color: #f8fafc;
+
+    font-family: "Bahnschrift";
+    font-size: 25px;
+    font-weight: 600;
+}
+
+#highlightDescription {
+    color: #94a3b8;
+
+    font-size: 12px;
+    font-weight: 400;
+}
+
+#emptyText {
+    color: #64748b;
+
+    font-size: 12px;
+    font-weight: 400;
+}
+
+
+/* =========================
+   SCROLLBAR
+========================= */
+
+QScrollBar:vertical {
+    background: transparent;
+
+    width: 10px;
+}
+
+QScrollBar::handle:vertical {
+    background: #475569;
+
+    border-radius: 5px;
+
+    min-height: 30px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background: #64748b;
+}
+
+QScrollBar::add-line:vertical,
+QScrollBar::sub-line:vertical {
+    height: 0px;
+}
+
+QScrollBar:horizontal {
+    background: transparent;
+
+    height: 10px;
+}
+
+QScrollBar::handle:horizontal {
+    background: #475569;
+
+    border-radius: 5px;
+
+    min-width: 30px;
+}
+
+QScrollBar::handle:horizontal:hover {
+    background: #64748b;
+}
+
+QScrollBar::add-line:horizontal,
+QScrollBar::sub-line:horizontal {
+    width: 0px;
+}
+
+
+/* =========================
+   DIALOG
+========================= */
+
+QDialog {
+    background-color: #111827;
+}
+
+#dialogTitulo {
+    color: #f8fafc;
+
+    font-family: "Bahnschrift";
+    font-size: 21px;
+    font-weight: 600;
+}
+
+
+/* =========================
+   MESSAGE BOX
+========================= */
+
+QMessageBox {
+    background-color: #1e293b;
+}
+
+QMessageBox QLabel {
+    color: #f8fafc;
+
+    font-size: 13px;
+    font-weight: 400;
+}
+
+QMessageBox QPushButton {
+    background-color: #2563eb;
+
+    color: #ffffff;
+
+    border: none;
+    border-radius: 7px;
+
+    padding: 7px 16px;
+
+    min-width: 75px;
+
+    font-size: 12px;
+    font-weight: 500;
+}
+
+QMessageBox QPushButton:hover {
+    background-color: #3b82f6;
+}
+
+
+/* =========================
+   BOTÃO DE TEMA
+========================= */
+
+#themeButton {
+    background-color: #111827;
+
+    color: #cbd5e1;
+
+    border: 1px solid #334155;
+    border-radius: 8px;
+
+    padding: 10px 12px;
+
+    text-align: left;
+
+    font-size: 12px;
+    font-weight: 500;
+}
+
+#themeButton:hover {
+    background-color: #1e293b;
+
+    color: #ffffff;
+
+    border-color: #475569;
+}
+
+/* =========================================================
+   LOGIN
+========================================================= */
+
+#loginLogo {
+    font-family: "Bahnschrift";
+    font-size: 27px;
+    font-weight: 600;
+}
+
+#loginSubtitle {
+    color: #64748b;
+
+    font-size: 10px;
+    font-weight: 500;
+}
+
+#loginTitle {
+    font-family: "Bahnschrift";
+
+    font-size: 20px;
+    font-weight: 600;
+}
+
+#loginDescription {
+    color: #64748b;
+
+    font-size: 12px;
+    font-weight: 400;
+}
+
+#loginFieldLabel {
+    color: #64748b;
+
+    font-size: 10px;
+    font-weight: 500;
+}
+
+#loginButton {
+    background-color: #2563eb;
+
+    color: white;
+
+    border: none;
+    border-radius: 9px;
+
+    padding: 12px;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+#loginButton:hover {
+    background-color: #1d4ed8;
+}
+
+#loginButton:pressed {
+    background-color: #1e40af;
+}
+
+
+/* USUÁRIO LOGADO */
+
+#userLabel {
+    color: #475569;
+
+    font-size: 9px;
+    font-weight: 500;
+}
+
+#userName {
+    color: #cbd5e1;
+
+    font-size: 12px;
+    font-weight: 500;
+}
